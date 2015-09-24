@@ -26,6 +26,7 @@
  */
 'use strict';
 
+var InteractionManager = require('InteractionManager');
 var ListViewDataSource = require('ListViewDataSource');
 var React = require('React');
 var RCTScrollViewManager = require('NativeModules').ScrollViewManager;
@@ -134,6 +135,11 @@ var ListView = React.createClass({
      * a row can be reset by calling highlightRow(null).
      */
     renderRow: PropTypes.func.isRequired,
+    /**
+      * If true, defer running renderRow until the current InteractionManager handle
+      * has cleared.
+      */
+    runRenderRowAfterInteractions: PropTypes.bool,
     /**
      * How many rows to render on initial component mount.  Use this to make
      * it so that the first screen worth of data appears at one time instead of
@@ -256,6 +262,7 @@ var ListView = React.createClass({
       initialListSize: DEFAULT_INITIAL_ROWS,
       pageSize: DEFAULT_PAGE_SIZE,
       renderScrollComponent: props => <ScrollView {...props} />,
+      runRenderRowAfterInteractions: false,
       scrollRenderAheadDistance: DEFAULT_SCROLL_RENDER_AHEAD,
       onEndReachedThreshold: DEFAULT_END_REACHED_THRESHOLD,
       stickyHeaderIndices: [],
@@ -287,6 +294,8 @@ var ListView = React.createClass({
   },
 
   componentDidMount: function() {
+    this._mounted = true;
+
     // do this in animation frame until componentDidMount actually runs after
     // the component is laid out
     this.requestAnimationFrame(() => {
@@ -316,6 +325,10 @@ var ListView = React.createClass({
     this.requestAnimationFrame(() => {
       this._measureAndUpdateScrollProps();
     });
+  },
+
+  componentWillUnmount() {
+    this._mounted = false;
   },
 
   onRowHighlighted: function(sectionID, rowID) {
@@ -495,7 +508,13 @@ var ListView = React.createClass({
 
     var distanceFromEnd = this._getDistanceFromEnd(this.scrollProperties);
     if (distanceFromEnd < this.props.scrollRenderAheadDistance) {
-      this._pageInNewRows();
+      if (this.props.runRenderRowAfterInteractions) {
+        InteractionManager.runAfterInteractions(() => {
+          this._mounted && this._pageInNewRows();
+        });
+      } else {
+        this._pageInNewRows();
+      }
     }
   },
 
