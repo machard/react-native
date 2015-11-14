@@ -193,3 +193,11 @@ BOOL RCTUpscalingRequired(CGSize sourceSize, CGFloat sourceScale,
       return NO;
   }
 }
+
+RCT_EXTERN CGSize RCTSizeInPixels(CGSize pointSize, CGFloat scale)
+{
+  return (CGSize){
+    ceil(pointSize.width * scale),
+    ceil(pointSize.height * scale),
+  };
+}
