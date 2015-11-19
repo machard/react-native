@@ -66,6 +66,7 @@ RCT_EXPORT_VIEW_PROPERTY(scrollIndicatorInsets, UIEdgeInsets)
 RCT_EXPORT_VIEW_PROPERTY(snapToInterval, int)
 RCT_EXPORT_VIEW_PROPERTY(snapToAlignment, NSString)
 RCT_REMAP_VIEW_PROPERTY(contentOffset, scrollView.contentOffset, CGPoint)
+RCT_EXPORT_VIEW_PROPERTY(onRefreshStart, RCTDirectEventBlock)
 
 - (NSDictionary *)constantsToExport
 {
@@ -115,6 +116,22 @@ RCT_EXPORT_METHOD(calculateChildFrames:(nonnull NSNumber *)reactTag
   }];
 }
 
+RCT_EXPORT_METHOD(endRefreshing:(nonnull NSNumber *)reactTag)
+{
+  [self.bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, RCTScrollView *> *viewRegistry) {
+    
+    RCTScrollView *view = viewRegistry[reactTag];
+    if (!view || ![view isKindOfClass:[RCTScrollView class]]) {
+      RCTLogError(@"Cannot find RCTScrollView with tag #%@", reactTag);
+      return;
+    }
+
+    [view endRefreshing];
+    
+  }];
+}
+
+
 - (NSArray<NSString *> *)customDirectEventTypes
 {
   return @[
@@ -128,3 +145,4 @@ RCT_EXPORT_METHOD(calculateChildFrames:(nonnull NSNumber *)reactTag
 }
 
 @end
+
