@@ -135,6 +135,7 @@ class Bundle {
         outSourceMap: 'bundle.js',
         inSourceMap: this.getSourceMap(),
         output: {ascii_only: true},
+        mangle: false
       });
       Activity.endEvent(minifyActivity);
       return this._minifiedSourceAndMap;
