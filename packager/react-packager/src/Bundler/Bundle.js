@@ -169,6 +169,7 @@ class Bundle extends BundleBase {
         outSourceMap: this._sourceMapUrl,
         inSourceMap: map,
         output: {ascii_only: true},
+        mangle: false
       });
       Activity.endEvent(minifyActivity);
       return this._minifiedSourceAndMap;
