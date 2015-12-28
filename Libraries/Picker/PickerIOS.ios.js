@@ -109,6 +109,7 @@ var styles = StyleSheet.create({
     // have to set the component's height explicitly on the
     // surrounding view to ensure it gets rendered.
     height: RCTPickerIOSConsts.ComponentHeight,
+    width: RCTPickerIOSConsts.ComponentWidth,
   },
 });
 
