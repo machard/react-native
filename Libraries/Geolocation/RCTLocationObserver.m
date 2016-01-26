@@ -132,6 +132,7 @@ RCT_EXPORT_MODULE()
     _locationManager.delegate = self;
   }
 
+  /* let me handle that 
   // Request location access permission
   if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationAlwaysUsageDescription"] &&
     [_locationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
@@ -140,6 +141,7 @@ RCT_EXPORT_MODULE()
     [_locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
     [_locationManager requestWhenInUseAuthorization];
   }
+   */
 
   // Start observing location
   [_locationManager startUpdatingLocation];
