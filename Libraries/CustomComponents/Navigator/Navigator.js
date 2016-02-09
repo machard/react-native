@@ -648,6 +648,7 @@ var Navigator = React.createClass({
       // The spring is at zero, so the gesture is already complete
       this.spring.setCurrentValue(0).setAtRest();
       this._completeTransition();
+      this._emitWillFocus(this.state.routeStack[this.state.presentedIndex]);
       return;
     }
     var isTravelVertical = releaseGesture.direction === 'top-to-bottom' || releaseGesture.direction === 'bottom-to-top';
@@ -674,6 +675,7 @@ var Navigator = React.createClass({
         var transitionBackToPresentedIndex = this.state.presentedIndex;
         // slight hack: change the presented index for a moment in order to transitionTo correctly
         this.state.presentedIndex = destIndex;
+        this._emitWillFocus(this.state.routeStack[transitionBackToPresentedIndex]);
         this._transitionTo(
           transitionBackToPresentedIndex,
           -transitionVelocity,
@@ -706,6 +708,7 @@ var Navigator = React.createClass({
     var transitionBackToPresentedIndex = this.state.presentedIndex;
     // slight hack: change the presented index for a moment in order to transitionTo correctly
     this.state.presentedIndex = destIndex;
+    this._emitWillFocus(this.state.routeStack[transitionBackToPresentedIndex]);
     this._transitionTo(
       transitionBackToPresentedIndex,
       null,
@@ -716,6 +719,7 @@ var Navigator = React.createClass({
   _attachGesture: function(gestureId) {
     this.state.activeGesture = gestureId;
     var gesturingToIndex = this.state.presentedIndex + this._deltaForGestureAction(this.state.activeGesture);
+    this._emitWillFocus(this.state.routeStack[gesturingToIndex]);
     this._enableScene(gesturingToIndex);
   },
 
