@@ -13,6 +13,7 @@
 
 var ReactPropTypes = require('ReactPropTypes');
 var RCTCameraRollManager = require('NativeModules').CameraRollManager;
+var Platform = require('Platform');
 
 var createStrictShapeTypeChecker = require('createStrictShapeTypeChecker');
 var deepFreezeAndThrowOnMutationInDev =
@@ -129,19 +130,15 @@ class CameraRoll {
    *
    * Returns a Promise which when resolved will be passed the new URI.
    */
-  static saveImageWithTag(tag) {
+  static saveImageWithTag(tag, options) {
     invariant(
       typeof tag === 'string',
       'CameraRoll.saveImageWithTag tag must be a valid string.'
     );
-    if (arguments.length > 1) {
-      console.warn("CameraRoll.saveImageWithTag(tag, success, error) is deprecated.  Use the returned Promise instead");
-      let successCallback = arguments[1];
-      let errorCallback = arguments[2] || ( () => {} );
-      RCTCameraRollManager.saveImageWithTag(tag).then(successCallback, errorCallback);
-      return;
-    }
-    return RCTCameraRollManager.saveImageWithTag(tag);
+    if (Platform.OS === 'ios')
+      return RCTCameraRollManager.saveImageWithTag(tag);
+    else
+      return RCTCameraRollManager.saveImageWithTag(tag, options);
   }
 
   /**

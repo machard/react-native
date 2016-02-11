@@ -33,6 +33,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
+import android.support.annotation.RequiresPermission;
 import android.text.TextUtils;
 
 import com.facebook.common.logging.FLog;
@@ -117,8 +118,8 @@ public class CameraRollManager extends ReactContextBaseJavaModule {
    * @param promise to be resolved or rejected
    */
   @ReactMethod
-  public void saveImageWithTag(String uri, Promise promise) {
-    new SaveImageTag(getReactApplicationContext(), Uri.parse(uri), promise)
+  public void saveImageWithTag(String uri, ReadableMap options, Promise promise) {
+    new SaveImageTag(getReactApplicationContext(), Uri.parse(uri), options, promise)
         .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
   }
 
@@ -126,12 +127,14 @@ public class CameraRollManager extends ReactContextBaseJavaModule {
 
     private final Context mContext;
     private final Uri mUri;
+    private final ReadableMap mOptions;
     private final Promise mPromise;
 
-    public SaveImageTag(ReactContext context, Uri uri, Promise promise) {
+    public SaveImageTag(ReactContext context, Uri uri, ReadableMap options, Promise promise) {
       super(context);
       mContext = context;
       mUri = uri;
+      mOptions = options;
       mPromise = promise;
     }
 
@@ -140,8 +143,16 @@ public class CameraRollManager extends ReactContextBaseJavaModule {
       File source = new File(mUri.getPath());
       FileChannel input = null, output = null;
       try {
+        File base = new File(Environment.DIRECTORY_PICTURES);
+
+        if (mOptions.hasKey("album")) {
+          base = new File(Environment.DIRECTORY_PICTURES, mOptions.getString("album"));
+        } else {
+          base = new File(Environment.DIRECTORY_PICTURES);
+        }
+
         File pictures =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+            Environment.getExternalStoragePublicDirectory(base.getPath());
         pictures.mkdirs();
         if (!pictures.isDirectory()) {
           mPromise.reject(ERROR_UNABLE_TO_LOAD, "External storage pictures directory not available");
