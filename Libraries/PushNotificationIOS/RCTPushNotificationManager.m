@@ -243,6 +243,24 @@ RCT_EXPORT_METHOD(scheduleLocalNotification:(UILocalNotification *)notification)
   [RCTSharedApplication() scheduleLocalNotification:notification];
 }
 
+RCT_EXPORT_METHOD(deleteLocalNotification:(NSString *)uidtodelete)
+{
+  UIApplication *app = [UIApplication sharedApplication];
+  NSArray *eventArray = [app scheduledLocalNotifications];
+  for (int i=0; i < (int)[eventArray count]; i++)
+  {
+    UILocalNotification* oneEvent = [eventArray objectAtIndex:i];
+    NSDictionary *userInfoCurrent = oneEvent.userInfo;
+    NSString *uid=[NSString stringWithFormat:@"%@",[userInfoCurrent valueForKey:@"id"]];
+    if ([uid isEqualToString:uidtodelete])
+    {
+      //Cancelling local notification
+      [app cancelLocalNotification:oneEvent];
+      break;
+    }
+  }
+}
+
 RCT_EXPORT_METHOD(cancelAllLocalNotifications)
 {
   [RCTSharedApplication() cancelAllLocalNotifications];
