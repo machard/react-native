@@ -120,6 +120,7 @@ var styles = StyleSheet.create({
 
 var GESTURE_ACTIONS = [
   'pop',
+  'jumpBackToTop',
   'jumpBack',
   'jumpForward',
 ];
@@ -628,6 +629,8 @@ var Navigator = React.createClass({
       case 'pop':
       case 'jumpBack':
         return -1;
+      case 'jumpBackToTop':
+        return -this.state.presentedIndex;
       case 'jumpForward':
         return 1;
       default:
