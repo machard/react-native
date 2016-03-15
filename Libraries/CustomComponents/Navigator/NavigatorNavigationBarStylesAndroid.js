@@ -42,7 +42,7 @@ var NAV_ELEMENT_HEIGHT = NAV_BAR_HEIGHT;
 var BASE_STYLES = {
   Title: {
     position: 'absolute',
-    bottom: 0,
+    //bottom: 0,
     left: 0,
     right: 0,
     alignItems: 'flex-start',
