@@ -346,11 +346,19 @@ exports.examples = [
     title: 'Passwords',
     render: function() {
       return (
-        <TextInput
-          defaultValue="iloveturtles"
-          password={true}
-          style={styles.singleLine}
-        />
+        <View>
+          <TextInput
+            defaultValue="iloveturtles"
+            secureTextEntry={true}
+            style={styles.singleLine}
+          />
+          <TextInput 
+            secureTextEntry={true}
+            style={[styles.singleLine, {color: 'red'}]}
+            placeholder="color is supported too"
+            placeholderTextColor="red"
+          />
+        </View>
       );
     }
   },
