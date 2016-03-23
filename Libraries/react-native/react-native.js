@@ -101,6 +101,9 @@ var ReactNative = {
   get EdgeInsetsPropType() { return require('EdgeInsetsPropType'); },
   get PointPropType() { return require('PointPropType'); },
 
+  //Added
+  get buildStyleInterpolator() { return require('buildStyleInterpolator'); },
+
   // See http://facebook.github.io/react/docs/addons.html
   addons: {
     get LinkedStateMixin() { return require('LinkedStateMixin'); },
