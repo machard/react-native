@@ -210,7 +210,9 @@ RCT_EXPORT_METHOD(getCurrentPosition:(RCTLocationOptions)options
     }
   }
 
-  if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
+  if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied ||
+      [CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted ||
+      [CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined) {
     if (errorBlock) {
       errorBlock(@[
         RCTPositionError(RCTPositionErrorDenied, nil)
