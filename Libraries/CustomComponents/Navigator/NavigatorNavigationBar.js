@@ -176,6 +176,7 @@ var NavigatorNavigationBar = React.createClass({
     return (
       <View
         key={this._key}
+        shouldRasterizeIOS
         style={[styles.navBarContainer, navBarStyle, this.props.style]}>
         {components}
       </View>

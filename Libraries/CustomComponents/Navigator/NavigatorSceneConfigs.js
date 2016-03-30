@@ -362,6 +362,53 @@ var ToTheBack = {
   },
 };
 
+var FromTheBack = {
+  // Rotate *requires* you to break out each individual component of
+  // rotation (x, y, z, w)
+  transformTranslate: {
+    from: {x: 0, y: 0, z: 0},
+    to: {x: 0, y: 0, z: 0},
+    min: 0,
+    max: 1,
+    type: 'linear',
+    extrapolate: true,
+    round: PixelRatio.get(),
+  },
+  transformScale: {
+    to: {x: 1, y: 1, z: 1},
+    from: {x: 0.95, y: 0.95, z: 1},
+    min: 0,
+    max: 1,
+    type: 'linear',
+    extrapolate: true
+  },
+  opacity: {
+    to: 1,
+    from: 0.3,
+    min: 0,
+    max: 1,
+    type: 'linear',
+    extrapolate: false,
+    round: 100,
+  },
+  scaleX: {
+    to: 1,
+    from: 0.95,
+    min: 0,
+    max: 1,
+    type: 'linear',
+    extrapolate: true
+  },
+  scaleY: {
+    to: 1,
+    from: 0.95,
+    min: 0,
+    max: 1,
+    type: 'linear',
+    extrapolate: true
+  },
+};
+
 var FromTheFront = {
   opacity: {
     value: 1.0,
@@ -380,6 +427,40 @@ var FromTheFront = {
   translateY: {
     from: Dimensions.get('window').height,
     to: 0,
+    min: 0,
+    max: 1,
+    type: 'linear',
+    extrapolate: true,
+    round: PixelRatio.get(),
+  },
+  scaleX: {
+    value: 1,
+    type: 'constant',
+  },
+  scaleY: {
+    value: 1,
+    type: 'constant',
+  },
+};
+
+var ToTheFront = {
+  opacity: {
+    value: 1.0,
+    type: 'constant',
+  },
+
+  transformTranslate: {
+    from: {x: 0, y: 0, z: 0},
+    to: {x: 0, y: Dimensions.get('window').height, z: 0},
+    min: 0,
+    max: 1,
+    type: 'linear',
+    extrapolate: true,
+    round: PixelRatio.get(),
+  },
+  translateY: {
+    from: 0,
+    to: Dimensions.get('window').height,
     min: 0,
     max: 1,
     type: 'linear',
@@ -536,6 +617,21 @@ var NavigatorSceneConfigs = {
     animationInterpolators: {
       into: buildStyleInterpolator(FromTheFront),
       out: buildStyleInterpolator(ToTheBack),
+    },
+  },
+  FloatFromBottomInverse: {
+    ...BaseConfig,
+    gestures: {
+      pop: {
+        ...BaseLeftToRightGesture,
+        edgeHitWidth: 150,
+        direction: 'top-to-bottom',
+        fullDistance: SCREEN_HEIGHT,
+      }
+    },
+    animationInterpolators: {
+      into: buildStyleInterpolator(FromTheBack),
+      out: buildStyleInterpolator(ToTheFront),
     },
   },
   FloatFromBottomAndroid: {
