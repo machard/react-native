@@ -362,6 +362,13 @@ var ToTheBack = {
   },
 };
 
+var ToTheBackStill = {
+  opacity: {
+    value: 1.0,
+    type: 'constant',
+  },
+};
+
 var FromTheBack = {
   // Rotate *requires* you to break out each individual component of
   // rotation (x, y, z, w)
@@ -406,6 +413,15 @@ var FromTheBack = {
     max: 1,
     type: 'linear',
     extrapolate: true
+  },
+};
+
+var FromTheBackStill = {
+  // Rotate *requires* you to break out each individual component of
+  // rotation (x, y, z, w)
+  opacity: {
+    value: 1.0,
+    type: 'constant',
   },
 };
 
@@ -631,6 +647,36 @@ var NavigatorSceneConfigs = {
     },
     animationInterpolators: {
       into: buildStyleInterpolator(FromTheBack),
+      out: buildStyleInterpolator(ToTheFront),
+    },
+  },
+  FloatFromBottomStill: {
+    ...BaseConfig,
+    gestures: {
+      pop: {
+        ...BaseLeftToRightGesture,
+        edgeHitWidth: 150,
+        direction: 'top-to-bottom',
+        fullDistance: SCREEN_HEIGHT,
+      }
+    },
+    animationInterpolators: {
+      into: buildStyleInterpolator(FromTheFront),
+      out: buildStyleInterpolator(ToTheBackStill),
+    },
+  },
+  FloatFromBottomInverseStill: {
+    ...BaseConfig,
+    gestures: {
+      pop: {
+        ...BaseLeftToRightGesture,
+        edgeHitWidth: 150,
+        direction: 'top-to-bottom',
+        fullDistance: SCREEN_HEIGHT,
+      }
+    },
+    animationInterpolators: {
+      into: buildStyleInterpolator(FromTheBackStill),
       out: buildStyleInterpolator(ToTheFront),
     },
   },
