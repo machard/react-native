@@ -31,6 +31,7 @@ var ListViewDataSource = require('ListViewDataSource');
 var React = require('React');
 var RCTScrollViewManager = require('NativeModules').ScrollViewManager;
 var ScrollView = require('ScrollView');
+var View = require('View');
 var ScrollResponder = require('ScrollResponder');
 var StaticRenderer = require('StaticRenderer');
 var TimerMixin = require('react-timer-mixin');
@@ -112,6 +113,8 @@ var ListView = React.createClass({
    */
   propTypes: {
     ...ScrollView.propTypes,
+
+    columns: PropTypes.number,
 
     dataSource: PropTypes.instanceOf(ListViewDataSource).isRequired,
     /**
@@ -259,6 +262,7 @@ var ListView = React.createClass({
 
   getDefaultProps: function() {
     return {
+      columns: 1,
       initialListSize: DEFAULT_INITIAL_ROWS,
       pageSize: DEFAULT_PAGE_SIZE,
       renderScrollComponent: props => <ScrollView {...props} />,
@@ -338,6 +342,9 @@ var ListView = React.createClass({
   render: function() {
     var bodyComponents = [];
 
+    for (var i = 0; i < this.props.columns; i++)
+      bodyComponents.push([]);
+
     var dataSource = this.props.dataSource;
     var allRowIDs = dataSource.rowIdentities;
     var rowCount = 0;
@@ -372,6 +379,8 @@ var ListView = React.createClass({
       }
 
       for (var rowIdx = 0; rowIdx < rowIDs.length; rowIdx++) {
+        var columnBodyComponents = bodyComponents[rowIdx % this.props.columns];
+
         var rowID = rowIDs[rowIdx];
         var comboID = sectionID + '_' + rowID;
         var shouldUpdateRow = rowCount >= this._prevRenderedRowsCount &&
@@ -388,7 +397,7 @@ var ListView = React.createClass({
               this.onRowHighlighted
             )}
           />;
-        bodyComponents.push(row);
+        columnBodyComponents.push(row);
         totalIndex++;
 
         if (this.props.renderSeparator &&
@@ -403,7 +412,7 @@ var ListView = React.createClass({
             rowID,
             adjacentRowHighlighted
           );
-          bodyComponents.push(separator);
+          columnBodyComponents.push(separator);
           totalIndex++;
         }
         if (++rowCount === this.state.curRenderedRowsCount) {
@@ -437,13 +446,28 @@ var ListView = React.createClass({
       onKeyboardDidHide: undefined,
     });
 
+    var bodyView = (<View
+      removeClippedSubviews={this.props.removeClippedSubviews}
+      style={{flexDirection: 'row'}}
+    >
+      {bodyComponents.map((components, i) =>
+        <View
+          key={i}
+          removeClippedSubviews={this.props.removeClippedSubviews}
+          style={{flex: 1}}
+        >
+          {components}
+        </View>
+      )}
+    </View>);
+
     // TODO(ide): Use function refs so we can compose with the scroll
     // component's original ref instead of clobbering it
     return React.cloneElement(renderScrollComponent(props), {
       ref: SCROLLVIEW_REF,
       onContentSizeChange: this._onContentSizeChange,
       onLayout: this._onLayout,
-    }, header, bodyComponents, footer);
+    }, header, bodyView, footer);
   },
 
   /**
